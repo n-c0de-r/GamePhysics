@@ -1,7 +1,7 @@
 /**
  * template GTAT2 Game Technology & Interactive Systems 
  * Header
- * @name    Uebung_2, 
+ * @name    Uebung_02, 
  * @author  n-c0de-r
  * @version 24.10.22
  */
