@@ -2,9 +2,29 @@
  *                 CONTROL FUNCTIONS
  * @name    Uebung_03, 
  * @author  n-c0de-r
- * @version 25.10.22
+ * @version 30.10.22
  ********************************************************/
 
-/**
- * @TODO create functions for inputs
- */
+// Overrides from built-in functions
+function mouseMoved() {
+
+}
+
+function  mouseDragged() {
+
+}
+
+function  mousePressed() {
+    
+}
+
+function  mouseReleased() {
+    
+}
+
+function  mouseClicked() {
+    if (calcButtonIntersection(gameButton)) {
+        gameRunning = !gameRunning;
+        gameButton.pressed = gameRunning;
+    }
+}

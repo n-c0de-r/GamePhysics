@@ -2,104 +2,139 @@
  *                   DRAWING FUNCTIONS
  * @name    Uebung_03, 
  * @author  n-c0de-r
- * @version 25.10.22
+ * @version 30.10.22
  ********************************************************/
 
 /**
- * Draws a ball at a given array in respect of it's resting point.
- * @param {number} x    X position
- * @param {number} y    Y position
- * @param {number} size The radius of the ball
- * @param {number[]|string} color Color
+ * Draws any ball object.
+ * @param {object} ball Ball to draw
  */
- function drawBall(x, y, size, color) {
-    fill(color);
+ function drawBall(ball) {
+    fill(ball.color);
     ellipseMode(RADIUS);
-    ellipse(x*M, (y+size)*M, size*M, size*M);
+    ellipse(ball.x*M, (ball.y+ball.r)*M, ball.r*M, ball.r*M);
   }
   
   /**
    * Draws the red boders the boule shouldn't cross.
-   * @param {*} x       X position from center
-   * @param {*} y       Y position from center
-   * @param {*} height  Height of the bar
-   * @param {*} flip    If it is flipped
+   * @param {object} x   Border
    */
-  function drawBorders(x, y, height ,flip) {
-    let sign = 1; // right
-    if (!flip) {// left
-      sign = -1;
-    }
+  function drawBorder(border) {
     
-    fill("red");
+    fill(border.color);
     rectMode(RADIUS);
   
-    rect(sign*x*M,(y-height)*M, ballRadius*2*M, height*M);
+    rect(border.x*M, border.y*M, border.w*M, border.h*M);
   }
   
   /**
    * Draws a ground rectangle of a given size at the central position
-   * @param {number} width 
-   * @param {number} height 
+   * @param {object} field  The field to draw
    */
-   function drawField(width, height) {
-    fill("white");
-    ellipse(width, height, 5,5);
-    fill("orange");
+   function drawField(field) {
+    fill(field.color);
     rectMode(CENTER);
-    rect(0, -height/2*M, width*M, height*M);
+    rect(0, -field.height/2*M, field.width*M, field.height*M);
+    fill("white");
+    ellipseMode(RADIUS);
+    ellipse(0, 0, 5, 5);
   }
   
   /**
   * Draws a seesaw.
-  * @param {number} x      Horizontal base position where to draw it
-  * @param {number} y      Vertical bottom position it's anchored to
-  * @param {number} len    Length of the seesaw
-  * @param {number} thick  Thickness of the seesaw
-  * @param {number} deg    Degree the seesaw is positioned
-  * @param {boolean} flip  Draws differently if it is flipped
+  * @param {object} seesaw  The seesaw to draw
   */
-  function drawSeesaw(x, y, len, thick, deg, flip) {
+  function drawSeesaw(seesaw) {
+    //boule.x = (boule.x+seesaw.length/2)* seesaw.flip
     fill(74, 120, 198);
-    // Calculate height and sides from angle and length
-    let triangleHeight = calcTriginometricSide(len/2, deg, "o");
-    let triangleSide = calcTriangleSide(triangleHeight);
-    /**
-     * @todo  find out how rotation works correctly
-     */
-  
-    let sign = 1; // right
-    if (!flip) {// left
-      sign = -1;
+    
+    push(); 
+    { // base triangle
+      translate((seesaw.x)*M, seesaw.y*M); // Direction changed, update x
+      triangle((-seesaw.base.width/2)*M, 0, 0, seesaw.base.height*M, (seesaw.base.width/2)*M, 0);
+
+      push();
+      { //next highest point, tip of the triangle.
+		    translate(0, seesaw.base.height*M);
+        rotate(seesaw.flip*seesaw.angle);
+        
+        rectMode(RADIUS); // Seesaw
+        rect(0, (seesaw.thick)*M, seesaw.length/2*M, seesaw.thick*M);
+
+        push();
+        { //next highest point: base of the seesaw; relevant sideway point: side edges
+           translate((seesaw.flip*seesaw.length/2)*M, seesaw.thick*2*M);
+
+          push();
+          { // next relevant sideway point: Ball edge.
+            translate((-seesaw.flip*ballRadius*2)*M, 0);
+            fill(74, 120, 198); // small triangle
+            triangle((-seesaw.flip*ballRadius/2)*M, 0, 0, (ballRadius)*M, (seesaw.flip*ballRadius/2)*M, 0);
+          }
+          pop();
+
+          push();
+          { // Click circles
+            if (seesaw.flip === 1) {
+              drawBall(bouleRight);
+              noFill();
+              rightCircle.kX = (seesaw.x+seesaw.length/2) * seesaw.flip;
+              rightCircle.kY = seesaw.base.height;
+              rightCircle.pX = convKXtoPX(rightCircle.kX*M);
+              rightCircle.pY = convKYtoPY(rightCircle.kY*M);
+              rightCircle.radius = 10;
+              stroke("red");
+              ellipse(0, -seesaw.thick*M, rightCircle.radius*2);
+              
+              stroke("white");
+              ellipse(rightCircle.pX, rightCircle.pY, rightCircle.radius*2);
+            } else {
+              drawBall(bouleLeft);
+              noFill();
+              leftCircle.kX = (seesaw.x+seesaw.length/2) * seesaw.flip;
+              leftCircle.kY = seesaw.base.height;
+              leftCircle.pX = convKXtoPX(leftCircle.kX*M);
+              leftCircle.pY = convKYtoPY(leftCircle.kY*M);
+              leftCircle.radius = 10;
+              stroke("blue");
+              ellipse(0, -seesaw.thick*M, leftCircle.radius*2);
+            }
+          }
+          pop();
+        }
+        pop();
+      }
+      pop();
     }
-    // Direction changed, update x
-    x = x * sign;
-    
-    // base triangle
-    triangle((x-triangleSide/2)*M, y, x*M, y+triangleHeight*M, (x+triangleSide/2)*M, y);
-  
-    //next highest point, tip of the triangle. Update
-    y = y+triangleHeight
-    // Seesaw
-    rectMode(RADIUS);
-    rect(x*M,(y+thick)*M, len/2*M, thick*M);
-  
-    //next highest point, base of the seesaw. Update
-    y = y+thick*2;
-    // next relevant sideway point: side edges. Update
-    x = x+sign*len/2;
-    
-    // draw boule
-    fill("white");
-    ellipseMode(RADIUS);
-    ellipse((x-sign*ballRadius)*M,(y+ballRadius)*M, ballRadius*M, ballRadius*M);
-  
-    
-    // next relevant sideway point: Ball edge. Update
-    x = x-sign*ballRadius*2;
-  
-    fill(74, 120, 198);
-  
-    // small triangle
-    triangle((x-sign*ballRadius/2)*M, y*M, x*M, (y+ballRadius)*M, (x+sign*ballRadius/2)*M, y*M);
+    pop();
+  }
+
+  /**
+   * Draws a toggle button with all its properties.
+   * @param {object}  button  Button to draw
+   */
+   function drawToggleButton(button) {
+    let dim = [button.x, button.y, button.w, button.h];
+    let buttonModes = button.options.split("/");
+
+    rectMode(CENTER);
+    fill(button.color);
+    rect(...dim, 10);
+
+    fill(button.textColor);
+    textSize(Math.min(0.05*canvasHeight, 0.05*canvasWidth));
+
+    let t = buttonModes[0];
+    if (button.pressed) {
+      t = buttonModes[1];
+    }
+    textAlign(CENTER, CENTER);
+    text(t, ...dim);
+  }
+
+  function drawText(input) {
+    rectMode(CORNER);
+    fill(input.color);
+    textSize(Math.min(input.h, input.w));
+    text(input.text, input.x, input.y);
   }
