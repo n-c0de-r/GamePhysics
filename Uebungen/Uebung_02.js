@@ -44,7 +44,7 @@ function draw() {
   background(64);
   fill(255);
   textSize(0.05*canvasHeight);
-  text("Übung 02, Rustic 24.11.22", 50, 50);
+  text("Übung 02, n-c0de-r 24.11.22", 50, 50);
 
   /* calculation */
 	
