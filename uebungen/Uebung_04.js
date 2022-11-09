@@ -1,6 +1,6 @@
 /**
  * GTAT2 Game Technology & Interactive Systems Header
- * @name    Uebung_03, 
+ * @name    Uebung_04, 
  * @author  n-c0de-r
  * @version 09.11.22
  */
@@ -22,6 +22,9 @@ function draw() {
   drawGUI(); // in controls
 
   /* calculation */
+  /**
+   * @todo refine all the click, drag and move interactions
+   */
    seesawRight.control.intersectsMouse();
    seesawLeft.control.intersectsMouse();
 
@@ -30,7 +33,6 @@ function draw() {
       noFill();
       stroke("black");
       ellipse(mouseX, mouseY, 5);
-      // seesawLeft.angle = PI*-mouseY;
     }
   pop();
 

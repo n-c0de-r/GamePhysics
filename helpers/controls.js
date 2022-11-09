@@ -52,7 +52,6 @@ function drawGUI() {
 
 // Overrides from built-in functions
 function mouseMoved() {
-
 }
 
 function  mouseDragged() {
@@ -60,14 +59,15 @@ function  mouseDragged() {
 }
 
 function  mousePressed() {
-    
+    mPressed = true;
 }
 
 function  mouseReleased() {
+    mClicked = false;
+    mReleased = true;
 }
 
 function  mouseClicked() {
-    if(calcButtonIntersection(gameButton)) {
-        running = gameButton.toggle();
-    }
+    running = gameButton.intersectsMouse();
+    mClicked = true;
 }

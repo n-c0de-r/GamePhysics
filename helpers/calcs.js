@@ -6,6 +6,15 @@
  ********************************************************/
 
 /**
+ * Converts degrees to radians
+ * @param {number} deg 
+ * @returns float number of radians
+ */
+ function deg2rad(deg) {
+  return deg * (Math.PI/180);
+}
+
+/**
  * Calculates one side of a equilateral triangle.
  * @param {number} height The given height.
  * @returns Length of a side
@@ -13,7 +22,7 @@
 function calcTriangleSide(height) {
   return 2 * height / Math.sqrt(3.0);
 }
-  
+
 /**
 * Calculates the height of a triangle via trigonometry.
 * @param {number} len     The length of the given side
@@ -36,40 +45,18 @@ function calcTriginometricSide(len, deg, target) {
   return result;
 }
 
-/**
- * Converts degrees to radians
- * @param {number} deg 
- * @returns float number of radians
- */
-function deg2rad(deg) {
-  return deg * (Math.PI/180);
-}
-
-/**
- * Checks if the current mouse position is inside the given button.
- * @param {object}  btn The button to check.
- * @returns {boolean} Value when inside the button.
- */
-function calcButtonIntersection(btn) {
-  if ((mouseX > btn.x-btn.width/2 && mouseX < btn.x+btn.width/2) &&
-        mouseY > btn.y-btn.width/2 && mouseY < btn.y+btn.width/2) {
-    return true;
-  }
-  return false;
-}
-
+// Conversions from cartesian to pixels
 function convKXtoPX(x) {
   return x + xi0;
 }
-
 function convKYtoPY(y) {
   return yi0 - y;
 }
 
+// Conversions from pixels to cartesian
 function convPXtoKX(x) {
   return x - xi0;
 }
-
 function convPYtoKY(y) {
   return yi0 - y;
 }

@@ -203,6 +203,7 @@ class OverlayCircle {
         this.seesaw = seesaw;
         //Absolute values
         this.radius = ballRadius;
+        this.intersects = false;
         this.status = false;
         //Calculated values
         this.oldX = x;
@@ -263,17 +264,34 @@ class ToggleButton {
      * @param {string} texts
      */
     constructor(size, offX, colors, texts) {
+        //Parameter values
         this.size = size;
         this.offX = offX;
-        this.update();
+        //Absolute values
+        this.intersects;
         this.pressed = false;
-        this.colors = colors.split("/");
         this.textColor = "white";
+        //Calculated value
+        this.update();
+        this.colors = colors.split("/");
         this.texts = texts.split("/");
     }
 
+    intersectsMouse() {
+        if (!this.intersects) { // Not intersecting yet
+            // only then recalculate
+            this.intersects = (mouseX > this.x-this.width/2 && mouseX < this.x+this.width/2) &&
+                                (mouseY > this.y-this.height/2 && mouseY < this.y+this.height/2);
+        }
+
+        if ((this.intersects)) { // in button
+            this.intersects = false;
+            return this.toggle();
+        }
+        this.draw();
+    }
+    
     update() {
-        // calculated values
         this.x = canvasWidth-(this.offX+1)*percentWidth;
         this.y = canvasHeight-(this.size)*percentHeight;
         this.width = this.size*2*percentWidth;

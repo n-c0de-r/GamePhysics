@@ -6,7 +6,7 @@
  ********************************************************/
 
 // Header variables
-const myName = "n-c0de-r";
+const myName = "Rustic";
 const exercise = "Übung 04";
 const date = currentDate();
 
