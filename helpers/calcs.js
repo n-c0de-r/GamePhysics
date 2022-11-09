@@ -1,8 +1,8 @@
 /********************************************************
  *                 CALCULATION FUNCTIONS
- * @name    Uebung_03, 
+ * @name    Uebung_04, 
  * @author  n-c0de-r
- * @version 02.11.22
+ * @version 09.11.22
  ********************************************************/
 
 /**
@@ -18,7 +18,7 @@ function calcTriangleSide(height) {
 * Calculates the height of a triangle via trigonometry.
 * @param {number} len     The length of the given side
 * @param {number} deg     The given angle
-* @param {string} target  "o"pposide, "a"djecent, "h"ypothenuse
+* @param {string} target  "o"pposite, "a"djecent, "h"ypothenuse
 * @returns The calculated length as a float
 */
 function calcTriginometricSide(len, deg, target) {
@@ -58,21 +58,6 @@ function calcButtonIntersection(btn) {
   return false;
 }
 
-/**
- * Checks if the mouse is inside a certain overlay circle
- * @param {object} circle The circle to check
- * @returns true if the mouse is inside the circle
- */
-function calcMouseIntersection(circle) {
-  let d = Math.pow((mouseX - circle.x), 2) + Math.pow((mouseY - circle.y), 2);
-
-  if (d < circle.radius*circle.radius*4) {
-    console.log("yes");
-    return true;
-  }
-  return false;
-}
-
 function convKXtoPX(x) {
   return x + xi0;
 }
@@ -101,9 +86,6 @@ function updateSizes() {
   M = 0.8*canvasWidth/playground.width; // Set the scale to 80% of the playground
   xi0 = canvasWidth/2;                 // Set origin point into the middle of the canvas
   yi0 = 0.8*canvasHeight;
-
-  gameButton.update();
-  infoText.update();
 }
 
 /**

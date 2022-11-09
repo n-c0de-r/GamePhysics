@@ -1,14 +1,18 @@
 /********************************************************
  *                 CONTROL FUNCTIONS
- * @name    Uebung_03, 
+ * @name    Uebung_04, 
  * @author  n-c0de-r
- * @version 30.10.22
+ * @version 09.11.22
  ********************************************************/
 
 /**
  * Sets up all game relevant variables
  */
 function initWorld() {
+    t = 0; 
+    dt = 0;
+    running = false;
+
     angleMode(DEGREES);
     canvasWidth = window.innerWidth*0.99; //99% removes scroll bars
     canvasHeight = window.innerHeight*0.99;
@@ -42,15 +46,8 @@ function drawObjects() {
  */
 function drawGUI() {
     gameButton.draw();
+    // debugButton.draw();
     infoText.draw();
-}
-
-/**
- * Draw temporary overlaying elements
- */
-function drawOverlays() {
-    circleRight.draw();
-    circleLeft.draw();
 }
 
 // Overrides from built-in functions
@@ -59,7 +56,7 @@ function mouseMoved() {
 }
 
 function  mouseDragged() {
-
+    mDragged = true;
 }
 
 function  mousePressed() {
@@ -67,11 +64,10 @@ function  mousePressed() {
 }
 
 function  mouseReleased() {
-    
 }
 
 function  mouseClicked() {
     if(calcButtonIntersection(gameButton)) {
-        gameButton.toggle();
+        running = gameButton.toggle();
     }
 }

@@ -1,16 +1,16 @@
 /**
  * GTAT2 Game Technology & Interactive Systems Header
- * @name    Uebung_03, 
+ * @name    Uebung_04, 
  * @author  n-c0de-r
- * @version 02.11.22
+ * @version 09.11.22
  */
 
 /**
  *  Prepare program & set up everything properly.
  */
 function setup() {
-  initWorld();
-  updateSizes();
+  initWorld(); // in controls
+  updateSizes(); // in calcs
 }
 
 /**
@@ -19,25 +19,34 @@ function setup() {
 function draw() {
   /* administration */
   background(64);
-  drawGUI();
+  drawGUI(); // in controls
 
   /* calculation */
   /**
    * @todo redo all the click, drag and move interactions
    */
-  calcMouseIntersection(circleLeft);
+   seesawRight.control.intersectsMouse();
+   seesawLeft.control.intersectsMouse();
+
+  push();
+    {
+      noFill();
+      stroke("black");
+      ellipse(mouseX, mouseY, 5);
+      // seesawLeft.angle = PI*-mouseY;
+    }
+  pop();
 
   /* display */
   push(); // save old settings
     translate(xi0, yi0);  // move origin to cartesian middle
 	  scale(1, -1);	        // Flip y axis
 
-    drawObjects();
-    drawOverlays();
+    drawObjects(); // in controls
 	pop(); // restore old settings
 }
 
 function windowResized() {
-  updateSizes();
+  updateSizes(); // in calcs
   resizeCanvas(canvasWidth, canvasHeight);
 }

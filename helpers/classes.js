@@ -1,8 +1,8 @@
 /********************************************************
  *                        CLASSES
- * @name    Uebung_03, 
+ * @name    Uebung_04, 
  * @author  n-c0de-r
- * @version 02.11.22
+ * @version 09.11.22
  ********************************************************/
 
 // Game Objects
@@ -32,6 +32,8 @@ class Playground {
     }
 }
 
+
+
 class Border {
     /**
      * Borders the boules are not allowed to cross
@@ -58,6 +60,8 @@ class Border {
     }
 }
 
+
+
 class Ball {
     /**
      * A ball of a certain size, mass and color
@@ -73,25 +77,46 @@ class Ball {
         this.radius = radius;
         this.mass = mass;
         this.color = color;
+        this.seesaw = null;
+        this.direction = x / Math.abs(x);
     }
 
     draw() {
         push();
-            rotate(0);
-            
             ellipseMode(RADIUS);
             fill(this.color);
-            ellipse(this.x*M, (this.y+this.radius)*M, this.radius*M, this.radius*M);
+
+            if (this.seesaw != null) {
+                this.rotate(this.seesaw.angle);
+            } else {
+                ellipse(this.x*M, (this.y+this.radius)*M, this.radius*M, this.radius*M);
+            }
+            
+        pop();
+    }
+
+    rotate(angle) {
+        push();
+            translate(this.seesaw.midX*M, this.seesaw.midY*M);
+            rotate(angle);
+            let x = this.direction*(this.seesaw.length/2-this.radius)*M;
+            let y = (this.seesaw.thickness*2 + this.radius)*M;
+            ellipse(x, y, this.radius*M, this.radius*M);
         pop();
     }
 }
+
+
 
 class Seesaw {
     /**
      * Seesaw that tosses boules
      * @param {number} x
+     * @param {number} width
+     * @param {number} height
      * @param {number} length
-     * @param {string | number[]} color  
+     * @param {number} thickness
+     * @param {string | number[]} color
      */
     constructor(x, width, height, length, thickness, color) {
         this.x = x;
@@ -102,14 +127,16 @@ class Seesaw {
         this.midX = x;
         this.midY = height;
         this.base = width;
+        this.control = null;
     }
 
     draw() {
         fill(this.color);
         triangle((this.x-this.base/2)*M, 0, this.x*M, this.midY*M, (this.x+this.base/2)*M, 0);
+
         push();
         {
-            translate(this.x*M, this.midY*M);
+            translate(this.midX*M, this.midY*M);
             rotate(this.angle);
             rectMode(RADIUS); // Seesaw
             rect(0, (this.thickness)*M, this.length/2*M, this.thickness*M);
@@ -124,20 +151,17 @@ class Seesaw {
 
 // GUI Objects
 class InfoText {
+    /**
+     * Draws the infotext with name and date
+     * @param {number} size 
+     * @param {string|number[]} color 
+     * @param {string} text 
+     */
     constructor(size, color, text) {
         this.size = size;
         this.update();
         this.color = color;
         this.text = text;
-    }
-
-    draw() {
-        push();
-            rectMode(CORNER);
-            fill(this.color);
-            textSize(Math.min(this.height, this.width));
-            text(this.text, ...this.dim);
-        pop();
     }
 
     update() {
@@ -147,30 +171,88 @@ class InfoText {
         this.height = this.size*percentHeight;
         this.dim = [this.x, this.y, this.width, this.height];
     }
+
+    draw() {
+
+        this.update();
+
+        push();
+            rectMode(CORNER);
+            fill(this.color);
+            textSize(Math.min(this.height, this.width));
+            text(this.text, ...this.dim);
+        pop();
+    }
 }
+
+
 
 class OverlayCircle {
     /**
     * A visualization circle of a certain size and color
     * @param {number} x
     * @param {number} y
-    * @param {string | number[]} color  
+    * @param {string | number[]} color
+    * @param {object} seesaw
     */
-    constructor(x, y, color) {
+    constructor(x, y, color, seesaw) {
+        //Original parameters
         this.x = x;
         this.y = y;
-        this.radius = 10;
         this.color = color;
+        this.seesaw = seesaw;
+        //Absolute values
+        this.radius = ballRadius;
+        this.status = false;
+        //Calculated values
+        this.oldX = x;
+        this.oldY = y;
+        this.direction = x/ Math.abs(x);
+    }
+
+    intersectsMouse() {
+        // Based on Prof. N's code but altered to my fitting
+        let mx = convPXtoKX(mouseX);
+        let my = convPYtoKY(mouseY);
+
+        if (!this.intersects) { // Not intersecting yet
+            // only then recalculate and reset status
+            this.intersects = sq(mx - this.x * M) + sq(my - this.y * M) <= sq(this.radius * M);
+        }
+
+        if ((this.intersects || this.status)) { // in circle
+            this.status = true;
+
+            if (mouseIsPressed && running) {
+                // this.x = mx / M;
+                this.y = my / M;
+                // While mouse is down, move the seesaw bound to this circle
+                this.seesaw.rotate(this.seesaw.angle - this.direction*(this.oldY-this.y));
+            }
+            else {
+                angleMode(DEGREES);
+                this.seesaw.rotate(0)
+                this.intersects = false;
+                this.status = false;
+                // Only when mouse is released, update the circle values
+                // this.oldX = this.x;
+                this.oldY = this.y;
+            }
+        }
+        this.draw();
     }
 
     draw() {
         push();
             noFill();
+            ellipseMode(CENTER);
             stroke(this.color);
-            ellipse(this.x*M, this.y*M, this.radius*2);
+            ellipse(convKXtoPX(this.x*M), convKYtoPY(this.y*M), this.radius*2*M);
         pop();
     }
 }
+
+
 
 class ToggleButton {
     /**
@@ -184,13 +266,24 @@ class ToggleButton {
         this.size = size;
         this.offX = offX;
         this.update();
-        this.pressed = running;
+        this.pressed = false;
         this.colors = colors.split("/");
         this.textColor = "white";
-        this.texts = texts.split("/");;
+        this.texts = texts.split("/");
+    }
+
+    update() {
+        // calculated values
+        this.x = canvasWidth-(this.offX+1)*percentWidth;
+        this.y = canvasHeight-(this.size)*percentHeight;
+        this.width = this.size*2*percentWidth;
+        this.height = this.size*percentHeight;
+        this.dim = [this.x, this.y, this.width, this.height];
     }
 
     draw() {
+        this.update();
+        
         push();
             rectMode(CENTER);
             fill(this.colors[this.pressed | 0]);
@@ -202,17 +295,9 @@ class ToggleButton {
             text(this.texts[this.pressed | 0], ...this.dim);
         pop();
     }
-    
-    update() {
-        this.x = canvasWidth-(this.offX+1)*percentWidth;
-        this.y = canvasHeight-(this.size)*percentHeight;
-        this.width = this.size*2*percentWidth;
-        this.height = this.size*percentHeight;
-        this.dim = [this.x, this.y, this.width, this.height];
-    }
 
     toggle() {
-        running = !running;
-        this.pressed = running;
+        this.pressed = !this.pressed;
+        return this.pressed;
     }
 }

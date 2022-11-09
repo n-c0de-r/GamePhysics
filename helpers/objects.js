@@ -1,8 +1,8 @@
 /********************************************************
  *                        OBJECTS
- * @name    Uebung_03, 
+ * @name    Uebung_04, 
  * @author  n-c0de-r
- * @version 02.11.22
+ * @version 09.11.22
  ********************************************************/
 
 // Game objects
@@ -14,9 +14,14 @@ const borderRight   = new Border( borderDistance/2, -0.01, ballRadius*2, 0.01, "
 const borderLeft    = new Border(-borderDistance/2, -0.01, ballRadius*2, 0.01, "red");
 const bouleRight    = new Ball( ballX, seesawHeight+seesawThickness*2, ballRadius, 0.005, "white");
 const bouleLeft     = new Ball(-ballX, seesawHeight+seesawThickness*2, ballRadius, 0.005, "white");
+// Bind boules to the respective seesaw in the beginning.
+bouleLeft.seesaw  = seesawLeft;
+bouleRight.seesaw = seesawRight;
 
 // GUI objects
 const gameButton = new ToggleButton(4, 4, "green/red", "Start/Reset");
+// const debugButton = new ToggleButton(4, 16, "green/red", "Debug/Debug");
 const infoText = new InfoText(4, "white", exercise + ", " + myName + ", " + date);
-const circleRight = new OverlayCircle(seesawDistance/2+seesawLength/2, seesawHeight+seesawThickness, "red");
-const circleLeft = new OverlayCircle( -seesawDistance/2-seesawLength/2, seesawHeight+seesawThickness, "blue");
+// Bind Control Overlay to seesaw as property, and vice versa as a parameter 
+seesawRight.control = new OverlayCircle( seesawDistance/2+seesawLength/2, seesawHeight+seesawThickness, "red", seesawRight);
+seesawLeft.control  = new OverlayCircle(-seesawDistance/2-seesawLength/2, seesawHeight+seesawThickness, "blue", seesawLeft);
